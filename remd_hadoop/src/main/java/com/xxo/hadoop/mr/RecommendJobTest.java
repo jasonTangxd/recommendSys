@@ -198,7 +198,8 @@ public class RecommendJobTest {
 		
 		int argLen=args.length;
 		if(argLen<3){
-			logger.error("need atleast more then 3 args    inputdir  ouputdir tempdir");
+			//D://ugctail.log D://testTmp D://testOut
+			logger.error("need atleast more then 3 args inputdir  ouputdir tempdir");
 			System.exit(2);
 		}
 		
