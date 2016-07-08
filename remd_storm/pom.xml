@@ -18,12 +18,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.storm</groupId>
-            <artifactId>storm-core</artifactId>
-            <version>0.9.3</version>
-            <!--<scope>provided</scope>-->
-        </dependency>
+
 
         <dependency>
             <groupId>org.apache.storm</groupId>

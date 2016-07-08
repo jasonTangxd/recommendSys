@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by xiaoxiaomo on 2016/6/23.
+ * Created by xiaoxiaomo on 2015/6/23.
  */
 public class MahoutDemo01 {
 

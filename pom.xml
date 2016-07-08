@@ -3,17 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.xxo</groupId>
-  <artifactId>RecommendSys_20160622</artifactId>
+  <artifactId>RecommendSys_20150622</artifactId>
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>remd_mahout</module>
     <module>remd_hadoop</module>
     <module>remd_kafka</module>
     <module>remd_storm</module>
+    <module>xxo_tools</module>
   </modules>
   <packaging>pom</packaging>
 
-  <name>RecommendSys_20160622</name>
+  <name>RecommendSys_20150622</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -28,8 +29,6 @@
       <version>4.12</version>
       <!--<scope>test</scope>-->
     </dependency>
-
-
 
   </dependencies>
 </project>

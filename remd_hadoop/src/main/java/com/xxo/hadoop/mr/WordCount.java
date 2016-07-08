@@ -39,7 +39,7 @@ public class WordCount {
         context.write(word, one);
         //输出到指定目录 现在设置最后的输出格式为：/world_count/output-m-00000、/world_count/output-m-00001 等多个
         // 此参数可以通过命令行来获取传到map来动态获取：在main函数中conf.set("key","value") mapper中：context.getConfiguration().get("key") 就获取了
-        multipleOutputs.write(word,one,"/world_count/mapoutput");
+//        multipleOutputs.write(word,one,"/world_count/mapoutput");
       }
     }
 

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 /**
- * Created by zenith on 2015/12/31.
+ * Created by xiaoxiaomo on 2015/12/31.
  */
 public class RecommenderCleaner {
 

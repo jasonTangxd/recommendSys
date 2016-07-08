@@ -50,7 +50,7 @@ while [ $j -gt $k ]; do
     hdfs dfs -put /opt/data/temp/recommender.log.$yesterday /recommender/tmp/recommender.log.$yesterday
     #########################################将零散的hdfs的文件汇总 便于计算 end ###########################
     
-    hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.zenith.recommender.mr.RecommenderCleaner /recommender/tmp/recommender.log.$yesterday /recommender/data/history/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
+    hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.xiaoxiaomo.recommender.mr.RecommenderCleaner /recommender/tmp/recommender.log.$yesterday /recommender/data/history/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
     #将结果覆盖下history目录
     hdfs dfs -rm /recommender/data/history/*
     hdfs dfs -cp /recommender/result/${stat_date}/* /recommender/data/history/
@@ -67,7 +67,7 @@ while [ $j -gt $k ]; do
     hdfs dfs -rm -r /recommender/result/${stat_date}
     hdfs dfs -put /opt/data/temp/recommender.log.$stat_date /recommender/tmp/recommender.log.$stat_date
     
-    hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.zenith.recommender.mr.RecommenderCleaner /recommender/tmp/recommender.log.$stat_date /recommender/data/history/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
+    hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.xiaoxiaomo.recommender.mr.RecommenderCleaner /recommender/tmp/recommender.log.$stat_date /recommender/data/history/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
     fi
     #执行mahout计算结果
     hdfs dfs -rm -r /recommender/tmp/${stat_date}/tmp

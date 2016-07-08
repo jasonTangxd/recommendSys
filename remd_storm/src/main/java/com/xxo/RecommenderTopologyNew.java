@@ -5,7 +5,7 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 /**
- * Created by zenith on 2016/2/23.
+ * Created by xiaoxiaomo on 2015/2/23.
  */
 public class RecommenderTopologyNew {
 

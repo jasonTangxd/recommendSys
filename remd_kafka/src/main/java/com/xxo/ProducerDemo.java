@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by zenith on 2016/1/27.
+ * Created by xiaoxiaomo on 2015/1/27.
  */
 public class ProducerDemo {
     static Map<Integer, Integer> userId = new HashMap<Integer, Integer>();

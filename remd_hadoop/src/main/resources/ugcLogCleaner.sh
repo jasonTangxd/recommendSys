@@ -21,7 +21,7 @@ while [ $i -gt $j ]; do
 
     hdfs dfs -put /opt/data/temp/Tail.log.$stat_date /source/ugctail/Tail.log.$stat_date
 
-    echo "hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.zenith.recommender.mr.UgcLogCleaner /source/ugctail/Tail.log.$stat_date /result/ugctail/${stat_date}/"
+    echo "hadoop jar /work/recommender/recommender-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.xiaoxiaomo.recommender.mr.UgcLogCleaner /source/ugctail/Tail.log.$stat_date /result/ugctail/${stat_date}/"
 
     #delete hive data
     hdfs dfs -rm -r /warehouse/hive/warehouse/ent.db/t_origin_ugc_tail_online/datecol=$stat_date_dir

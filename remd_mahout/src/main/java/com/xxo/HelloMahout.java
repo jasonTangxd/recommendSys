@@ -15,7 +15,7 @@ import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 /**
- * Created by xiaoxiaomo on 2016/6/22.
+ * Created by xiaoxiaomo on 2015/6/22.
  */
 public class HelloMahout {
 	private static Logger logger=Logger.getLogger(HelloMahout.class);

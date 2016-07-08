@@ -10,7 +10,7 @@ import storm.kafka.SpoutConfig;
 import storm.kafka.StringScheme;
 import storm.kafka.ZkHosts;
 /**
- * Created by zenith on 2016/2/23.
+ * Created by xiaoxiaomo on 2015/2/23.
  */
 public class RecommenderTopology {
 

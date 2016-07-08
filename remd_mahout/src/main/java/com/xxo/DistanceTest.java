@@ -5,7 +5,7 @@ import org.junit.Test;
 
 /**
  * 距离算法
- * Created by xiaoxiaomo on 2016/6/22.
+ * Created by xiaoxiaomo on 2015/6/22.
  */
 public class DistanceTest {
 

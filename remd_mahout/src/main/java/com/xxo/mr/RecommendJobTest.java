@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 
 /**
  * 推荐项目 - 离线项目清洗
- * Created by xiaoxiaomo on 2016/6/24.
+ * Created by xiaoxiaomo on 2015/6/24.
  */
 public class RecommendJobTest {
 

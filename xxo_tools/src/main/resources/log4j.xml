@@ -1,0 +1,15 @@
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy/MM/dd-HH:mm:ss} >> %5p >> %t >> %l >> %m%n"/>
+        </layout>
+    </appender>
+    <logger name="org.hibernate.transaction" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="Console"/>
+    </logger>
+    <root>
+        <priority value="debug"/>
+        <appender-ref ref="Console"/>
+    </root>
+</log4j:configuration>
