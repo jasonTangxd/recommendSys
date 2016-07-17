@@ -11,7 +11,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.db.DBInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
 
@@ -127,6 +130,11 @@ public class RecommenderCleaner {
         job.setMapOutputValueClass(DoubleWritable.class);
         job.setOutputKeyClass(NullWritable.class);
         job.setOutputValueClass(Text.class);
+
+        //可以设置多输入路径
+//        MultipleInputs.addInputPath( job , new Path(args[0]) , TextInputFormat.class);
+//        MultipleInputs.addInputPath( job , new Path(args[1]) , DBInputFormat.class);
+//        MultipleInputs.addInputPath( job , new Path(args[2]) , TextInputFormat.class);
         //history input
         for (int i = 0; i < args.length-2; i++) {
             FileInputFormat.addInputPath(job,new Path(args[i]));
