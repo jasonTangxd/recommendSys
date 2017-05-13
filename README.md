@@ -1,4 +1,4 @@
-# RecommendSys_20150622
+# recommendSys
 - 推荐系统
 - 离线计算和实时计算
 

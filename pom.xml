@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.xxo</groupId>
-  <artifactId>RecommendSys_20150622</artifactId>
+  <artifactId>recommendSys</artifactId>
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>remd_mahout</module>
@@ -14,7 +14,7 @@
   </modules>
   <packaging>pom</packaging>
 
-  <name>RecommendSys_20150622</name>
+  <name>recommendSys</name>
   <url>http://maven.apache.org</url>
 
   <properties>
