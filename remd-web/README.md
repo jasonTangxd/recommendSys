@@ -22,7 +22,7 @@ mvn clean package
 ```
 2. xiaoxiaomo08,xiaoxiaomo09模拟WEB服务器参数数据，上传jar到08,09，运行:
 ``` sbtshell
-java -cp remd-web-1.0-SNAPSHOT-jar-with-dependencies.jar com.xxo.web.SimulationRequest
+java -cp remd-web-1.0-SNAPSHOT-jar-with-dependencies.jar SimulationRequest com.xiaoxiaomo.web.SimulationRequest
 ```
 3. 就会参数三个文件
 ```sbtshell
