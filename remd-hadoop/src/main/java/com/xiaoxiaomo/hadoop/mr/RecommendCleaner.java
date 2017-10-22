@@ -21,6 +21,8 @@ import java.text.DecimalFormat;
  *
  * 用户行为数据清洗
  *
+ * hadoop jar /work/recommender/remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendCleaner /source/access/20171022/events-.1508671857111.tmp /recommender/result_temp/20171022/ /recommender/result/20171022/
+ *
  * Created by xiaoxiaomo on 2015/12/31.
  */
 public class RecommendCleaner {

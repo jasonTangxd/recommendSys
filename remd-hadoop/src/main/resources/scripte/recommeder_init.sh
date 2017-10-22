@@ -49,7 +49,7 @@ while [ $j -gt $k ]; do
         hdfs dfs -rm -r /recommender/result/${stat_date}
         hdfs dfs -rm -r /recommender/result_temp/${stat_date}
         hdfs dfs -put /opt/data/temp/recommender.log.$stat_date /recommender/tmp/recommender.log.$stat_date
-        hadoop jar /work/recommender/remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar cn.xiaoxiaomo.recommender.mr.RecommenderCleaner /recommender/tmp/recommender.log.$stat_date /recommender/result/${stat_before}/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
+        hadoop jar /work/recommender/remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendCleaner /recommender/tmp/recommender.log.$stat_date /recommender/result/${stat_before}/ /recommender/result_temp/${stat_date}/ /recommender/result/${stat_date}/
     else
         echo "/source/ugctail/${stat_date} is not exits"
     fi
