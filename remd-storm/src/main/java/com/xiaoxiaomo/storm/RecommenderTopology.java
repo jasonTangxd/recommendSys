@@ -25,7 +25,7 @@ public class RecommenderTopology {
         */
 
         //这个地方其实就是kafka配置文件里边的zookeeper.connect这个参数
-        String brokerZkStr = "xxo07:2181";
+        String brokerZkStr = "xiaoxiaomo10:2181";
         ZkHosts zkHosts = new ZkHosts(brokerZkStr);
         String topic = "recommender";
         //汇报offset信息的root路径
