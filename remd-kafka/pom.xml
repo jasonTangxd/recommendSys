@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>remd_mahout</artifactId>
+    <artifactId>remd-kafka</artifactId>
     <packaging>jar</packaging>
 
-    <name>remd_mahout</name>
+    <name>remd-kafka</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -18,39 +18,23 @@
     </properties>
 
     <dependencies>
-        <!-- mahout -->
+        <!-- kafka -->
         <dependency>
-            <groupId>org.apache.mahout</groupId>
-            <artifactId>mahout-mr</artifactId>
-            <version>0.11.1</version>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.11</artifactId>
+            <version>0.8.2.2</version>
+            <!--<exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>-->
         </dependency>
-
-
-        <!-- json工具包 -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.8</version>
-        </dependency>
-
-        <!-- jieba分词器 -->
-        <!--<dependency>-->
-            <!--<groupId>com.huaban</groupId>-->
-            <!--<artifactId>jieba-analysis</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
-
-        <!-- ik-analyzer分词器 -->
-        <dependency>
-            <groupId>ik</groupId>
-            <artifactId>IKAnalyzer</artifactId>
-            <version>2012FF_u1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/IKAnalyzer-2012FF_u1.jar</systemPath>
-        </dependency>
-
     </dependencies>
-
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
@@ -91,5 +75,4 @@
         </plugins>
         <defaultGoal>compile</defaultGoal>
     </build>
-
 </project>

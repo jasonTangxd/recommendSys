@@ -1,5 +1,6 @@
 package com.xxo.hadoop.mr;
 
+import com.xxo.hadoop.entity.UgcLogEntity;
 import com.xxo.hadoop.utils.RedisUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -26,9 +27,7 @@ public class UgcLogCleaner {
 
     private static Logger logger=Logger.getLogger(UgcLogCleaner.class);
 
-    public static class UgcMapper
-            extends Mapper<LongWritable,Text,NullWritable,Text>{
-
+    public static class UgcMapper extends Mapper<LongWritable,Text,NullWritable,Text>{
 
     	private String ipInfo=null;
 		private Integer appId=0;
@@ -77,7 +76,7 @@ public class UgcLogCleaner {
                 	
                     try {
                     //创建log
-                    UgcLog log=new UgcLog(appId
+                    UgcLogEntity log=new UgcLogEntity(appId
                             ,strs[1]
                             ,strs[2]
                             ,strs[3]

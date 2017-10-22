@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>xxo_tools</artifactId>
+    <artifactId>remd-tools</artifactId>
     <packaging>jar</packaging>
 
-    <name>xxo_tools</name>
+    <name>remd-tools</name>
     <url>http://maven.apache.org</url>
 
     <properties>

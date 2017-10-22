@@ -7,10 +7,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>remd_storm</artifactId>
+    <artifactId>remd-storm</artifactId>
     <packaging>jar</packaging>
 
-    <name>remd_storm</name>
+    <name>remd-storm</name>
     <url>http://maven.apache.org</url>
 
     <properties>

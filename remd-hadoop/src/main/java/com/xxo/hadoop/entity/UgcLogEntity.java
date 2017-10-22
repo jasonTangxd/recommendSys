@@ -1,11 +1,14 @@
-package com.xxo.hadoop.mr;
+package com.xxo.hadoop.entity;
 
 /**
- * Created by xiaoxiaomo on 2015/12/31.
+ * UGCLog
+ *
+ * appid	ip	mid	seid	userid	param	time
+ *
+ * Created by xiaoxiaomo on 2016/08/31.
  */
-public class UgcLog {
+public class UgcLogEntity {
 
-    //appid	ip	mid	seid	userid	param	time
     private Integer appid;
     private String ip;
     private String province;
@@ -84,26 +87,6 @@ public class UgcLog {
         this.dateTime = dateTime;
     }
 
-   
-
-    public UgcLog(Integer appid, String ip, String mid, String seid,Integer userid, String param, Long time) {
-        this.appid = appid;
-        this.ip = ip;
-        this.mid = mid;
-        this.userid = userid;
-        this.param=param;
-        this.seid = seid;
-        this.time = time;
-    }
-
-
-
-
-
-    @Override
-    public String toString() {
-        return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",this.appid,this.ip,this.province,this.city,this.mid,this.userid,this.param,this.seid,this.time,this.dateTime);
-    }
 
 	public String getProvince() {
 		return province;
@@ -120,5 +103,20 @@ public class UgcLog {
 	public void setCity(String city) {
 		this.city = city;
 	}
+
+    public UgcLogEntity(Integer appid, String ip, String mid, String seid, Integer userid, String param, Long time) {
+        this.appid = appid;
+        this.ip = ip;
+        this.mid = mid;
+        this.userid = userid;
+        this.param=param;
+        this.seid = seid;
+        this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s",this.appid,this.ip,this.province,this.city,this.mid,this.userid,this.param,this.seid,this.time,this.dateTime);
+    }
 
 }
