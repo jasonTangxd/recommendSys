@@ -24,7 +24,14 @@ mvn clean package
 ``` sbtshell
 java -cp remd-web-1.0-SNAPSHOT-jar-with-dependencies.jar com.xxo.web.SimulationRequest
 ```
-
+3. 就会参数三个文件
+```sbtshell
+[root@xiaoxiaomo08 data]# ll /opt/data/
+total 12
+-rw-r--r--. 1 root root 3871 Oct 22 18:56 access.log
+-rw-r--r--. 1 root root 3462 Oct 22 18:56 ugchead.log
+-rw-r--r--. 1 root root 3416 Oct 22 18:56 ugctail.log
+```
 
 
 
