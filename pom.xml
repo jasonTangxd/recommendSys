@@ -11,6 +11,8 @@
     <module>remd_kafka</module>
     <module>remd_storm</module>
     <module>xxo_tools</module>
+    <module>remd-flume</module>
+    <module>remd-web</module>
   </modules>
   <packaging>pom</packaging>
 
