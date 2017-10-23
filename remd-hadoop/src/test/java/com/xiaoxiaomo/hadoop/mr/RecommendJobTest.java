@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * 用户行为数据清洗
  *
- * hadoop jar remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendJobTest.RecommendJobTest /user/root/ugchead.log /recommender/result/20171022/
+ * hadoop jar remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendJobTest.RecommendJobTest /user/root/ugctail.log /recommender/result/20171022/
  *
  * Created by xiaoxiaomo on 2015/12/31.
  */
