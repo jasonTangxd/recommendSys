@@ -58,8 +58,8 @@ public class RecommendCleaner extends Configured implements Tool {
         job.setMapOutputValueClass(DoubleWritable.class);
 
 
-        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(DoubleWritable.class);
 
         //可以设置多输入路径
 //        MultipleInputs.addInputPath( job , new Path(args[0]) , TextInputFormat.class);
@@ -80,8 +80,9 @@ public class RecommendCleaner extends Configured implements Tool {
         }
 
         conf = new Configuration();
-        conf.set("recommender_score_max", String.valueOf(job.getCounters()
-                .findCounter(RecommendReducer.Counters.MAX).getValue()));
+        long scoreMax=job.getCounters().findCounter(RecommendReducer.Counts.MAX).getValue();
+
+        conf.set("recommend_score_max", String.valueOf(scoreMax));
 
         Job filter =Job.getInstance(conf,"RecommenderFilter");
 
@@ -100,6 +101,15 @@ public class RecommendCleaner extends Configured implements Tool {
 
     public static class RecommendMapper extends Mapper<LongWritable,Text,Text,DoubleWritable>{
 
+        private String[] UgcLogs;
+        private JSONObject parseObject;
+        private Integer userId;
+        private Integer itemId;
+        private String ugcType;
+        private Double score;
+        private Text userItem = new Text();
+        private DoubleWritable scoreValue = new DoubleWritable();
+
         /**
          * 1003    218.75.75.133   342e12e7-eb7f-4a8b-9764-9d18b2b7439e    f94e95f6-ed1a-4fc2-b9c3-bffc873a09c9    10709   {"ugctype":"fav","userId":"10709","item":"11"}       1454147875901
          * appid	ip	mid	seid	userid	param	time
@@ -116,18 +126,15 @@ public class RecommendCleaner extends Configured implements Tool {
                 return ;
             }
 
-            String[] UgcLogs = value.toString().split("\t");
+            UgcLogs = value.toString().split("\t");
             //清理垃圾数据
             if ( UgcLogs.length >= 7 ){
                 try {
-                    Integer userId = Integer.parseInt(UgcLogs[4]);
-                    String param = UgcLogs[5];  //param为一个json字符串
-                    JSONObject jsonObject = JSONObject.parseObject(param);
-                    String itemId =  (String) jsonObject.get("item");
-                    if ( itemId != null ){
-                        String ugcType = (String) jsonObject.get("ugctype");
-                        Double score;
-
+                    parseObject = JSONObject.parseObject(UgcLogs[5]); //为一个json字符串
+                    userId = parseObject.getInteger("userId");
+                    itemId = parseObject.getInteger("item");
+                    if ( userId != null && itemId != null  ){
+                        ugcType = parseObject.getString("ugctype");
                         //行为权重
                         switch ( ugcType ){
                             case "consumer":
@@ -142,16 +149,27 @@ public class RecommendCleaner extends Configured implements Tool {
                             default:
                                 score = 0d;
                         }
-                        context.write(new Text(userId+"\t"+itemId),new DoubleWritable(score));
-
+                        userItem.set(String.format("%s\t%s", userId,itemId));
+                        scoreValue.set(score);
+                        context.write(userItem, scoreValue);
                     }
                 }
                 catch (Exception e){
                     LOG.error("清洗数据异常",e);
                 }
             }else{
-                if ( UgcLogs.length == 3){
-                    context.write(new Text(UgcLogs[0]+"\t"+UgcLogs[1]),new DoubleWritable(Double.parseDouble(UgcLogs[2])));
+
+                //如果输入的是历史的已经清洗之后的数据
+                if( UgcLogs.length == 3 ){
+                    userItem.set(String.format("%s\t%s", UgcLogs[0],UgcLogs[1]));
+                    try {
+                        score=Double.parseDouble(UgcLogs[2]);
+                    } catch (Exception e) {
+                        LOG.error(e.getMessage());
+                        score=0d;
+                    }
+                    scoreValue.set(score);
+                    context.write(userItem, scoreValue);
                 }
 
             }
@@ -161,7 +179,9 @@ public class RecommendCleaner extends Configured implements Tool {
             extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
 
         private static Double scores = 0d; // 评分
-        public enum Counters { MAX }
+        public enum Counts{MAX}
+
+        @Override
         protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
 
             //重置全局变量scores
@@ -171,7 +191,7 @@ public class RecommendCleaner extends Configured implements Tool {
             }
 
             // 计数
-            Counter counter = context.getCounter(Counters.MAX);
+            Counter counter = context.getCounter(Counts.MAX);
             if ( counter.getValue() < scores.longValue() ) {
                 counter.setValue(scores.longValue());
             }
@@ -181,14 +201,21 @@ public class RecommendCleaner extends Configured implements Tool {
 
     
     public static class FilterMapper extends Mapper<LongWritable, Text, NullWritable, Text>{
-    	
+
+        private long recommend_score_max;
+        @Override
+        protected void setup(
+                Context context)
+                throws IOException, InterruptedException {
+            recommend_score_max=Long.parseLong(context.getConfiguration().get("recommend_score_max"));
+        }
+
     	@Override
     	protected void map(LongWritable key, Text value,Context context)
     			throws IOException, InterruptedException {
-    		long max = Long.parseLong(context.getConfiguration().get("recommender_score_max"));
     		String[] strs = value.toString().split("\t");
-    		if(strs.length == 3 && max > 100){
-    			context.write(NullWritable.get(), new Text(String.format("%s\t%s\t%s",strs[0],strs[1],decimalFormat.format(Double.parseDouble(strs[2])*100.00/max))));
+    		if(strs.length == 3 && recommend_score_max > 100){
+    			context.write(NullWritable.get(), new Text(String.format("%s\t%s\t%s",strs[0],strs[1],decimalFormat.format(Double.parseDouble(strs[2])*100.00/recommend_score_max))));
     		}else{
     			context.write(NullWritable.get(), value);
     		}
