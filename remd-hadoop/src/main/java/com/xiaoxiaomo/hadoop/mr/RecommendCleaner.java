@@ -8,6 +8,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -50,8 +51,8 @@ public class RecommendCleaner extends Configured implements Tool {
         job.setNumReduceTasks(1);
         job.setJarByClass(RecommendCleaner.class);
 
-        job.setMapperClass(RecommenderMapper.class);
-        job.setReducerClass(RecommenderReducer.class);
+        job.setMapperClass(RecommendMapper.class);
+        job.setReducerClass(RecommendReducer.class);
 
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(DoubleWritable.class);
@@ -80,7 +81,7 @@ public class RecommendCleaner extends Configured implements Tool {
 
         conf = new Configuration();
         conf.set("recommender_score_max", String.valueOf(job.getCounters()
-                .findCounter(RecommenderReducer.Counters.MAX).getValue()));
+                .findCounter(RecommendReducer.Counters.MAX).getValue()));
 
         Job filter =Job.getInstance(conf,"RecommenderFilter");
 
@@ -97,7 +98,7 @@ public class RecommendCleaner extends Configured implements Tool {
     }
 
 
-    public static class RecommenderMapper extends Mapper<LongWritable,Text,Text,DoubleWritable>{
+    public static class RecommendMapper extends Mapper<LongWritable,Text,Text,DoubleWritable>{
 
         /**
          * 1003    218.75.75.133   342e12e7-eb7f-4a8b-9764-9d18b2b7439e    f94e95f6-ed1a-4fc2-b9c3-bffc873a09c9    10709   {"ugctype":"fav","userId":"10709","item":"11"}       1454147875901
@@ -111,7 +112,7 @@ public class RecommendCleaner extends Configured implements Tool {
          */
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-            if ( null != value ) {    // 清理null数据
+            if ( null == value ) {    // 清理null数据
                 return ;
             }
 
@@ -156,22 +157,25 @@ public class RecommendCleaner extends Configured implements Tool {
             }
         }
     }
-    public static class RecommenderReducer
-            extends Reducer<Text,DoubleWritable,NullWritable,Text> {
+    public static class RecommendReducer
+            extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
 
-        Double result = 0d;
-        long max = 0l;
+        private static Double scores = 0d; // 评分
         public enum Counters { MAX }
         protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
 
+            //重置全局变量scores
+            scores = 0d;
             for ( DoubleWritable val : values ) {
-            	result += val.get();
+                scores += val.get();
             }
 
-            if ( context.getCounter(Counters.MAX).getValue() < result.longValue() ) {
-            	context.getCounter(Counters.MAX).setValue(result.longValue());
+            // 计数
+            Counter counter = context.getCounter(Counters.MAX);
+            if ( counter.getValue() < scores.longValue() ) {
+                counter.setValue(scores.longValue());
             }
-            context.write(NullWritable.get(), new Text(String.format("%s\t%s",key.toString(),result)));
+            context.write(key,new DoubleWritable(scores));
         }
     }
 

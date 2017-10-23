@@ -6,7 +6,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -19,11 +18,14 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
+
+
+
 /**
  *
  * 用户行为数据清洗
  *
- * hadoop jar remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendJobTest /source/access/20171022/events-.1508671857111.tmp /recommender/result/20171022/
+ * hadoop jar remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendJobTest.RecommendJobTest /user/root/ugchead.log /recommender/result/20171022/
  *
  * Created by xiaoxiaomo on 2015/12/31.
  */
@@ -44,24 +46,22 @@ public class RecommendJobTest extends Configured implements Tool {
 
 		Job job = Job.getInstance(conf,"Recommend");
 		job.setNumReduceTasks(1);
-		job.setJarByClass(RecommendCleaner.class);
+		job.setJarByClass(RecommendJobTest.class);
 
-		job.setMapperClass(RecommenderMapper.class);
-		job.setReducerClass(RecommenderReducer.class);
+		job.setMapperClass(RecommendJobTest.RecommenderMapper.class);
+		job.setReducerClass(RecommendJobTest.RecommenderReducer.class);
 
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
 
 
-		job.setOutputKeyClass(NullWritable.class);
-		job.setOutputValueClass(Text.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(DoubleWritable.class);
 		//history input
-		for (int i = 0; i < args.length-2; i++) {
-			FileInputFormat.addInputPath(job,new Path(args[i]));
-		}
+		FileInputFormat.addInputPath(job,new Path(args[0]));
 
 		//output
-		FileOutputFormat.setOutputPath(job, new Path(args[args.length-2]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
@@ -82,7 +82,7 @@ public class RecommendJobTest extends Configured implements Tool {
 		 */
 		protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 
-			if ( null != value ) {    // 清理null数据
+			if ( null == value ) {    // 清理null数据
 				return ;
 			}
 
@@ -121,7 +121,7 @@ public class RecommendJobTest extends Configured implements Tool {
 		}
 	}
 	public static class RecommenderReducer
-			extends Reducer<Text,DoubleWritable,NullWritable,Text> {
+			extends Reducer<Text,DoubleWritable,Text,DoubleWritable> {
 
 		Double result = 0d;
 		long max = 0l;
@@ -132,10 +132,10 @@ public class RecommendJobTest extends Configured implements Tool {
 				result += val.get();
 			}
 
-			if ( context.getCounter(Counters.MAX).getValue() < result.longValue() ) {
-				context.getCounter(Counters.MAX).setValue(result.longValue());
+			if ( context.getCounter(RecommendJobTest.RecommenderReducer.Counters.MAX).getValue() < result.longValue() ) {
+				context.getCounter(RecommendJobTest.RecommenderReducer.Counters.MAX).setValue(result.longValue());
 			}
-			context.write(NullWritable.get(), new Text(String.format("%s\t%s",key.toString(),result)));
+			context.write(key,new DoubleWritable(result));
 		}
 	}
 
@@ -144,10 +144,10 @@ public class RecommendJobTest extends Configured implements Tool {
 
 	public static void main(String[] args)  throws Exception {
 		if ( args.length < 2 ){
-			LOG.error("Usage: recommend <history_in> <in> <out>");
+			LOG.error("Usage: recommend <in> <out>");
 			System.exit(2);
 		}
-		int exitCode = ToolRunner.run(new RecommendCleaner(), args);
+		int exitCode = ToolRunner.run(new RecommendJobTest(), args);
 		System.exit(exitCode);
 	}
 
