@@ -2,6 +2,7 @@ package com.xiaoxiaomo.hadoop.mr;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -12,6 +13,8 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -21,19 +24,80 @@ import java.text.DecimalFormat;
  *
  * 用户行为数据清洗
  *
- * hadoop jar /work/recommender/remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendCleaner /source/access/20171022/events-.1508671857111.tmp /recommender/result_temp/20171022/ /recommender/result/20171022/
+ * 测试数据，使用remd-web中的 ugchead.log
+ *
+ * hadoop jar remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.RecommendCleaner /source/ugchead/20171022/events-.1508671857111.tmp /recommender/result_temp/20171022/ /recommender/result/20171022/
  *
  * Created by xiaoxiaomo on 2015/12/31.
  */
-public class RecommendCleaner {
+public class RecommendCleaner extends Configured implements Tool {
 
     private static Logger LOG = Logger.getLogger(RecommendCleaner.class);
-
     private static DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
+    @Override
+    public int run(String[] args) throws Exception {
+
+        // conf优化设置
+        Configuration conf = getConf();
+        conf.setBoolean("mapred.map.tasks.speculative.execution", false);
+        conf.setBoolean("mapred.reduce.tasks.speculative.execution", false);
+        conf.setStrings("mapred.child.java.opts","-Xmx1024m");
+        conf.setInt("mapred.map.tasks",1); //自己的测试机设置小一点
+
+
+        Job job = Job.getInstance(conf,"Recommend");
+        job.setNumReduceTasks(1);
+        job.setJarByClass(RecommendCleaner.class);
+
+        job.setMapperClass(RecommenderMapper.class);
+        job.setReducerClass(RecommenderReducer.class);
+
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
+
+
+        job.setOutputKeyClass(NullWritable.class);
+        job.setOutputValueClass(Text.class);
+
+        //可以设置多输入路径
+//        MultipleInputs.addInputPath( job , new Path(args[0]) , TextInputFormat.class);
+//        MultipleInputs.addInputPath( job , new Path(args[1]) , DBInputFormat.class);
+//        MultipleInputs.addInputPath( job , new Path(args[2]) , TextInputFormat.class);
+        //history input
+        for (int i = 0; i < args.length-2; i++) {
+            FileInputFormat.addInputPath(job,new Path(args[i]));
+        }
+
+        //output
+        FileOutputFormat.setOutputPath(job, new Path(args[args.length-2]));
+        //System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+        boolean success = job.waitForCompletion(true);
+        if( !success ) {
+            System.exit(1);
+        }
+
+        conf = new Configuration();
+        conf.set("recommender_score_max", String.valueOf(job.getCounters()
+                .findCounter(RecommenderReducer.Counters.MAX).getValue()));
+
+        Job filter =Job.getInstance(conf,"RecommenderFilter");
+
+        filter.setJarByClass(RecommendCleaner.class);
+        filter.setMapperClass(FilterMapper.class);
+        filter.setOutputKeyClass(NullWritable.class);
+        filter.setOutputValueClass(Text.class);
+
+        FileInputFormat.addInputPath(filter,new Path(args[args.length-2]));
+
+        //output
+        FileOutputFormat.setOutputPath(filter, new Path(args[args.length-1]));
+        return filter.waitForCompletion(true) ? 0 : 1;
+    }
 
 
     public static class RecommenderMapper extends Mapper<LongWritable,Text,Text,DoubleWritable>{
-
 
         /**
          * 1003    218.75.75.133   342e12e7-eb7f-4a8b-9764-9d18b2b7439e    f94e95f6-ed1a-4fc2-b9c3-bffc873a09c9    10709   {"ugctype":"fav","userId":"10709","item":"11"}       1454147875901
@@ -128,64 +192,14 @@ public class RecommendCleaner {
     	
     	
     }
-    
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
+    public static void main(String[] args)  throws Exception {
         if ( args.length < 3 ){
             LOG.error("Usage: recommend <history_in> <in> <temp> <out>");
             System.exit(2);
         }
-
-        Configuration configuration = new Configuration();
-
-        Job job = Job.getInstance(configuration,"Recommend");
-        job.setJarByClass(RecommendCleaner.class);
-
-        job.setMapperClass(RecommenderMapper.class);
-        job.setReducerClass(RecommenderReducer.class);
-
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(DoubleWritable.class);
-
-        job.setOutputKeyClass(NullWritable.class);
-        job.setOutputValueClass(Text.class);
-
-        //可以设置多输入路径
-//        MultipleInputs.addInputPath( job , new Path(args[0]) , TextInputFormat.class);
-//        MultipleInputs.addInputPath( job , new Path(args[1]) , DBInputFormat.class);
-//        MultipleInputs.addInputPath( job , new Path(args[2]) , TextInputFormat.class);
-        //history input
-        for (int i = 0; i < args.length-2; i++) {
-            FileInputFormat.addInputPath(job,new Path(args[i]));
-        }
-
-        //output
-        FileOutputFormat.setOutputPath(job, new Path(args[args.length-2]));
-        //System.exit(job.waitForCompletion(true) ? 0 : 1);
-
-        boolean success = job.waitForCompletion(true);
-        if( !success ) {
-            System.exit(1);
-        }
-
-        configuration = new Configuration();
-        configuration.set("recommender_score_max", String.valueOf(job.getCounters()
-                .findCounter(RecommenderReducer.Counters.MAX).getValue()));
-
-        Job filter =Job.getInstance(configuration,"RecommenderFilter");
-
-        filter.setJarByClass(RecommendCleaner.class);
-        filter.setMapperClass(FilterMapper.class);
-        filter.setOutputKeyClass(NullWritable.class);
-        filter.setOutputValueClass(Text.class);
-
-        FileInputFormat.addInputPath(filter,new Path(args[args.length-2]));
-
-        //output
-        FileOutputFormat.setOutputPath(filter, new Path(args[args.length-1]));
-        System.exit(filter.waitForCompletion(true) ? 0 : 1);
-
-
+        int exitCode = ToolRunner.run(new RecommendCleaner(), args);
+        System.exit(exitCode);
     }
 
 }
