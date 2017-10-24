@@ -1,0 +1,24 @@
+org.apache.mahout.cf.taste.recommender.Recommender.java
+
+接口中方法的解释：
+    recommend(long userID, int howMany): 获得推荐结果，给userID推荐howMany个Item
+    recommend(long userID, int howMany, IDRescorer rescorer): 获得推荐结果，给userID推荐howMany个Item，可以根据rescorer对结构重新排序。
+    estimatePreference(long userID, long itemID): 当打分为空，估计用户对物品的打分
+    setPreference(long userID, long itemID, float value): 赋值用户，物品，打分
+    removePreference(long userID, long itemID): 删除用户对物品的打分
+    getDataModel(): 提取推荐数据
+
+
+通过Recommender接口，我可以猜出核心算法，应该会在子类的estimatePreference()方法中进行实现。
+
+
+通过继承关系到Recommender接口的子类：
+    mahout-Recommender-hierarchy
+
+推荐算法实现类：
+    GenericUserBasedRecommender: 基于用户的推荐算法
+    GenericItemBasedRecommender: 基于物品的推荐算法
+    KnnItemBasedRecommender: 基于物品的KNN推荐算法
+    SlopeOneRecommender: Slope推荐算法
+    SVDRecommender: SVD推荐算法
+    TreeClusteringRecommender：TreeCluster推荐算法
