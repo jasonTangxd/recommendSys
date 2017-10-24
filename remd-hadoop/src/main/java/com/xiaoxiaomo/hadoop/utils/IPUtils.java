@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class IP {
+public class IPUtils {
 
     public static String randomIp() {
         Random r = new Random();
@@ -29,10 +29,10 @@ public class IP {
     }
 
     public static void main(String[] args){
-        String path = IP.class.getClassLoader().getResource("data/17monipdb.dat").getPath();
+        String path = IPUtils.class.getClassLoader().getResource("data/17monipdb.dat").getPath();
 
-        IP.load(path);
-        System.out.println(Arrays.toString(IP.find("221.195.40.145")));
+        IPUtils.load(path);
+        System.out.println(Arrays.toString(IPUtils.find("221.195.40.145")));
 
         // 测试效率：3457ms
 //        Long st = System.nanoTime();

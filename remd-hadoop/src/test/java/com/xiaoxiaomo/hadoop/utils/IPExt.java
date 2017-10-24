@@ -15,7 +15,7 @@ public class IPExt {
 
     public static void main(String[] args) {
 
-        String path = IP.class.getClassLoader().getResource("data/17monipdb.datx").getPath();
+        String path = IPUtils.class.getClassLoader().getResource("data/17monipdb.datx").getPath();
         IPExt.load(path);
 
         System.out.println(Arrays.toString(IPExt.find("8.8.8.8")));

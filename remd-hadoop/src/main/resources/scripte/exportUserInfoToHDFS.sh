@@ -4,8 +4,6 @@ source /etc/profile
 source /opt/work/mysqlConn.conf
 
 #30 0 * * * sh /root/exportUserInfo.sh > /root/logs/exportUserInfo.log 2>&1 &
-#查询crontab 用法
-# cat /etc/crontab
 
 #定义一个遍历起始日期的变量
 j=1

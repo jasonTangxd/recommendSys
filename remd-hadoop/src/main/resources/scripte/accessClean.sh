@@ -6,10 +6,6 @@ j=1
 #定义一个终结日期变量
 k=0
 
-######windows 下的脚本文件ff为doc在unix执行会有问题。
-#查看文件格式 (:set ff)
-#设置格式 方式：  (:set ff=unix)
-
 #j k 来控制指定的日期 时间段
 while [ $j -gt $k ]
 do
@@ -21,7 +17,7 @@ if [ $result -eq 0 ] ; then
 	hdfs dfs -rm -r /clean/access/$stat_date
 fi
 
-hadoop jar /opt/work/kfp-0.0.1-SNAPSHOT-jar-with-dependencies.jar crxykfp.kfp.mr.AccessLogCleaner /source/access/$stat_date /clean/access/$stat_date >/opt/work/logs/access.log.$stat_date 2>&1 &
+hadoop jar /opt/work/remd-hadoop-1.0-SNAPSHOT-jar-with-dependencies.jar com.xiaoxiaomo.hadoop.mr.AccessLogCleaner /source/access/$stat_date /clean/access/$stat_date >/opt/work/logs/access.log.$stat_date 2>&1 &
 
 #mr 清洗
 

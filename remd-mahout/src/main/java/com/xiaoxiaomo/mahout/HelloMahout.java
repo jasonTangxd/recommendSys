@@ -1,8 +1,5 @@
 package com.xiaoxiaomo.mahout;
 
-import java.io.File;
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
@@ -14,6 +11,9 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * Created by xiaoxiaomo on 2015/6/22.
  */
@@ -23,9 +23,10 @@ public class HelloMahout {
 	public static void main(String[] args) {
 
 		try {
+			String path = HelloMahout.class.getClassLoader().getResource("data/info.csv").getPath();
+
 			//读取数据
-			DataModel model = new FileDataModel(new File(
-					"H:\\chaorenxueyuan\\offline3video\\2016-06-22【推荐系统mahout】\\info.csv"));
+			DataModel model = new FileDataModel(new File(path));
 			// 相似度
 			UserSimilarity userSimilarity = new PearsonCorrelationSimilarity(model);
 			// 邻域

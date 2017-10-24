@@ -39,8 +39,10 @@ public class MahoutDemo01 {
     @Before
     public void InitData() throws IOException {
 
+        String path = HelloMahout.class.getClassLoader().getResource("data/info.csv").getPath();
+
         //1. 数据模型File Model
-        model1 = new FileDataModel(new File("H:\\chaorenxueyuan\\offline3video\\2016-06-22【推荐系统mahout】\\info.csv"));
+        model1 = new FileDataModel(new File(path));
 
         //2. 每一个用户的喜好列表
         FastByIDMap<PreferenceArray> data = new FastByIDMap<>();

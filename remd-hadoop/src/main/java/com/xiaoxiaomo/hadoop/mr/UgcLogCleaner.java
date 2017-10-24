@@ -1,7 +1,7 @@
 package com.xiaoxiaomo.hadoop.mr;
 
 import com.xiaoxiaomo.hadoop.entity.UgcLogEntity;
-import com.xiaoxiaomo.hadoop.utils.IP;
+import com.xiaoxiaomo.hadoop.utils.IPUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -64,7 +64,7 @@ public class UgcLogCleaner extends Configured implements Tool {
         protected void setup(Context context) throws IOException, InterruptedException {
             format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //            jedis= RedisUtils.getJedis();
-            IP.load(IP.class.getClassLoader().getResource("data/17monipdb.dat").getPath());
+            IPUtils.load(IPUtils.class.getClassLoader().getResource("data/17monipdb.dat").getPath());
         }
 
         @Override
@@ -106,7 +106,7 @@ public class UgcLogCleaner extends Configured implements Tool {
                                 ,time);
                         //解析ip
 //					    ipInfo = jedis.get("ip:"+log.getIp()); //IP可以初始化到Redis TODO
-                        ipStr = IP.find(log.getIp());
+                        ipStr = IPUtils.find(log.getIp());
                         if( ipStr != null && ipStr.length >= 2 ){
 //                            ipStr=ipInfo.split("\t");
                             log.setProvince(ipStr[0]);

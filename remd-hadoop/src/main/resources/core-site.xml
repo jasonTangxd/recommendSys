@@ -5,7 +5,7 @@
     <property>
         <!-- 当前集群NameNode的IP地址和端口号。2.0前使用fs.default.name，但后续兼容-->
         <name>fs.defaultFS</name>
-        <value>hdfs://xiaoxiaomo10:8020</value>
+        <value>hdfs://fetch-loadTest-20:8020</value>
     </property>
     <property>
         <!-- 设置临时文件目录 -->
